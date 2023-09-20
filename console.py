@@ -125,22 +125,23 @@ class HBNBCommand(cmd.Cmd):
             args_words = args.split(" ")
             class_name = args_words[0]
 
-            if args not in HBNBCommand.classes:
+            if class_name not in HBNBCommand.classes:
                 raise NameError()
+            
             params_dict = {}
             for arg in args_words[1:]:
-            # splits argument into key and value sep by '='
+                # splits argument into key and value sep by '='
                 key, value = arg.split('=')
-            #checks param value follows specific syntax rules
+                #checks param value follows specific syntax rules
                 if value.startswith('"') and value.endswith('"'):
                     value = value[1:-1].replace('_', ' ').replace('"', '\\"')
-            # convert value to int/float if appropriate
+                # convert value to int/float if appropriate
                 if '.' in value:
                     value = float(value)
                 else:
                     value = int(value)
+                params_dict[key] = value
 
-            params_dict[key] = value
         except SyntaxError:
             print("** class name missing **")
         except NameError:
