@@ -73,7 +73,7 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] is '{' and pline[-1] is'}'\
+                    if pline[0] == '{' and pline[-1] == '}'\
                             and type(eval(pline)) is dict:
                         _args = pline
                     else:
@@ -122,24 +122,43 @@ class HBNBCommand(cmd.Cmd):
         try:
             if not args:
                 raise SyntaxError()
-            args_words = args.split(" ")
-            class_name = args_words[0]
+            arg_words = args.split(" ")
+            class_name = arg_words[0]
 
-            if class_name not in HBNBCommand.classes:
-                raise NameError()
+            #if class_name not in HBNBCommand.classes:
+            #   raise NameError()
             
             params_dict = {}
             for arg in args_words[1:]:
                 # splits argument into key and value sep by '='
-                key, value = arg.split('=')
-                #checks param value follows specific syntax rules
-                if value.startswith('"') and value.endswith('"'):
-                    value = value[1:-1].replace('_', ' ').replace('"', '\\"')
+                arg_split = arg.split('=')
+                key = arg_split[0]
+                value = arg_split[1]
+                #arg_split[1] = eval(arg_split[1])
+                
                 # convert value to int/float if appropriate
                 if '.' in value:
                     value = float(value)
                 else:
-                    value = int(value)
+                    try:
+                        value = int(value)
+                    except ValueError:
+                        pass
+                    # param not in correct format, so skip
+
+                #checks param value follows specific syntax rules
+                if value.startswith('"') and value.endswith('"'):
+                    value = value[1:-1].replace('_', ' ').replace('"', '\\"')
+                    
+                # convert value to int/float if appropriate
+#                if '.' in arg_split[1]:
+ #                   value = float(value)
+  #              else:
+   #                 try:
+    #                    value = int(value)
+     #               except ValueError:
+      #                  pass
+       #              # param not in correct format, so skip
                 params_dict[key] = value
 
         except SyntaxError:
@@ -296,7 +315,7 @@ class HBNBCommand(cmd.Cmd):
                 args.append(v)
         else:  # isolate args
             args = args[2]
-            if args and args[0] is '\"':  # check for quoted arg
+            if args and args[0] == '\"':  # check for quoted arg
                 second_quote = args.find('\"', 1)
                 att_name = args[1:second_quote]
                 args = args[second_quote + 1:]
@@ -304,10 +323,10 @@ class HBNBCommand(cmd.Cmd):
             args = args.partition(' ')
 
             # if att_name was not quoted arg
-            if not att_name and args[0] is not ' ':
+            if not att_name and args[0] != ' ':
                 att_name = args[0]
             # check for quoted val arg
-            if args[2] and args[2][0] is '\"':
+            if args[2] and args[2][0] == '\"':
                 att_val = args[2][1:args[2].find('\"', 1)]
 
             # if att_val was not quoted arg
