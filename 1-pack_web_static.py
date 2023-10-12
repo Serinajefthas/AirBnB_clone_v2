@@ -13,8 +13,9 @@ def do_pack():
 
     local("mkdir -p versions")
 
-    archive_path = local("tar -cvzf versions/web_static_{}.tgz web_static".format(now))
-    if archive_path.failed:
+    path = local("tar -cvzf versions/web_static_{}.tgz web_static"
+                 .format(now))
+    if path.failed:
         return None
     else:
-        return archive_path
+        return path
